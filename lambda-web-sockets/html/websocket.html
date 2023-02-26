@@ -3,39 +3,66 @@
 <meta charset="utf-8" />
 
 <head>
-	<title>CORS test</title>
+	<title>WebSocket test </title>
 </head>
+<!-- This file can run on brower with no server -->
 
 <body>
 	<form>
-		</br>
-		URL:<input type="text" size="80" id="url"
-			value="wss://eji3awbnsh.execute-api.us-east-1.amazonaws.com/production" />
-		</br>
-		<input type="input" id="msg" />
-		</br>
-		<input type="button" id="button" onClick="sendSocketMessage()" value="test" />
-		</br>
-		<textarea id="text" rows="4" cols="50">API results will appear here.</textarea>
+		<br><br>
+		URL (API Gateway):<input type="input" size="80" id="url" value="wss://eji3awbnsh.execute-api.us-east-1.amazonaws.com/production" />
+		<br><br>
+		Message to send via socket: <input type="input" id="msg" />
+		<br><br>
+		<input type="submit" id="button" value="SEND THE MESSAGE" />
+		<br><br>
+		Socket Results (onmessage):
+		<br><br>
+		<div id="text" rows="4" cols="50"></div>
+
 		<script>
+			const textarea = document.getElementById("text");
+			document.getElementById("button").addEventListener("click", function (event) {
+				event.preventDefault();
+				sendSocketMessage();
+			});
+
 			let ws = undefined;
-			async function sendSocketMessage() {
+			window.onload = function () {
+				textarea.innerHTML = "opening socket...";
+				openWebSocket();
+			};
+
+			function sendSocketMessage() {
 				try {
 					const msg = document.getElementById("msg").value;
-					if (ws === undefined) {
-						const url = document.getElementById("url").value;
-						ws = await new WebSocket(url);
-					}
 					ws.send(msg);
-					console.log(`Appears to have sent: ${msg}`);
-					ws.onmessage = (message) => {
-						const textarea =  document.getElementById("text");
-						textarea.value = `message received, ${message.data}`;
-					}
+					console.log(`Sent Message: ${msg}`);
 				} catch (e) {
-					console.log(e);
+					console.log(`Error sending message: ${e}`);
 					console.log(e.stack);
 				}
+			}
+
+			var socketOnMessage = function (message) {
+				textarea.innerHTML = `Message received (${new Date()}):<br><br>${message.data}`;
+			};
+
+			var socketOnOpen = function (message) {
+				textarea.innerHTML = "...websocket opened!";
+			};
+
+			var socketOnClose = function (message) {
+				console.log('websocket disconnected - waiting for connection');
+				openWebSocket();
+			};
+
+			function openWebSocket() {
+				const websocketUrl = document.getElementById("url").value;
+				ws = new WebSocket(websocketUrl);
+				ws.onopen = socketOnOpen;
+				ws.onclose = socketOnClose;
+				ws.onmessage = socketOnMessage;
 			}
 		</script>
 </body>
