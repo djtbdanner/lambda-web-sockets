@@ -6,65 +6,147 @@
 	<title>WebSocket test </title>
 </head>
 <!-- This file can run on brower with no server -->
+<style>
+	.container {
+		margin: 20px auto;
+		width: 80%;
+		height: 80%;
+		padding: 20px;
+		background-color: #FFDE00;
+		border-radius: 10px;
+		box-shadow: 4px 4px 0px #367C2B;
+		text-align: left;
+		color:#367C2B;
+		font-family: Arial, Helvetica, sans-serif;
+		font-weight: bold;
+	}
+
+	input[type=input] {
+		padding: 10px;
+		border: none;
+		border-radius: 5px;
+		box-shadow: 4px 4px 0px #367C2B;
+		width: 95%;
+		margin: 5px;
+	}
+
+	button[type=submit] {
+		background-color: #367C2B;
+		color: white;
+		padding: 10px 20px;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		transition: background-color 0.3s ease;
+		margin: 5px;
+	}
+
+	button[type=submit]:hover {
+		background-color: #3e8e41;
+	}
+
+	h4{
+		color:#367C2B;
+		text-align: center;
+		font-size: larger;
+		font-weight: bolder;
+	} 
+
+	.text-area {
+		display: inline-grid;
+		vertical-align: top;
+		align-items: left;
+		text-align: left;
+		position: relative;
+		border: solid 1px;
+		border-color: #367C2B;
+		padding: .25em .5em;
+		margin: 5px;
+		width: 95%;
+		background-color: white;
+		border-radius: 5px;
+		box-shadow: 4px 4px 0px #367C2B;
+		color:black;
+		font-family: Arial, Helvetica, sans-serif;
+		font-weight: normal;
+	}
+
+</style>
 
 <body>
-	<form>
-		<br><br>
-		URL (API Gateway):<input type="input" size="80" id="url" value="wss://eji3awbnsh.execute-api.us-east-1.amazonaws.com/production" />
-		<br><br>
-		Message to send via socket: <input type="input" id="msg" />
-		<br><br>
-		<input type="submit" id="button" value="SEND THE MESSAGE" />
-		<br><br>
-		Socket Results (onmessage):
-		<br><br>
-		<div id="text" rows="4" cols="50"></div>
-
-		<script>
-			const textarea = document.getElementById("text");
-			document.getElementById("button").addEventListener("click", function (event) {
-				event.preventDefault();
-				sendSocketMessage();
-			});
-
-			let ws = undefined;
-			window.onload = function () {
-				textarea.innerHTML = "opening socket...";
-				openWebSocket();
-			};
-
-			function sendSocketMessage() {
-				try {
-					const msg = document.getElementById("msg").value;
-					ws.send(msg);
-					console.log(`Sent Message: ${msg}`);
-				} catch (e) {
-					console.log(`Error sending message: ${e}`);
-					console.log(e.stack);
-				}
-			}
-
-			var socketOnMessage = function (message) {
-				textarea.innerHTML = `Message received (${new Date()}):<br><br>${message.data}`;
-			};
-
-			var socketOnOpen = function (message) {
-				textarea.innerHTML = "...websocket opened!";
-			};
-
-			var socketOnClose = function (message) {
-				console.log('websocket disconnected - waiting for connection');
-				openWebSocket();
-			};
-
-			function openWebSocket() {
-				const websocketUrl = document.getElementById("url").value;
-				ws = new WebSocket(websocketUrl);
-				ws.onopen = socketOnOpen;
-				ws.onclose = socketOnClose;
-				ws.onmessage = socketOnMessage;
-			}
-		</script>
+	<div class="container">
+		<form>
+			<h4>Lambda Socket Example</h4>
+			Message to send via socket:<br><input type="input" id="msg" />
+			<br><br><br>
+			<button type="submit" id="button">SEND THE MESSAGE</button>
+			<br><br><br>
+			Socket Results (onmessage): <span id="timer"></span>
+			<br>
+			<span id="text" class="text-area"></span>
+		</form>
+	</div>
 </body>
+<script>
+	const textarea = document.getElementById("text");
+	document.getElementById("button").addEventListener("click", function (event) {
+		event.preventDefault();
+		sendSocketMessage();
+	});
+
+	let ws = undefined;
+	window.onload = function () {
+		appendText("opening socket...");
+		openWebSocket();
+	};
+
+	function sendSocketMessage() {
+		try {
+			const msg = document.getElementById("msg").value;
+			ws.send(msg);
+			console.log(`Sent Message: ${msg}`);
+		} catch (e) {
+			console.log(`Error sending message: ${e}`);
+			console.log(e.stack);
+		}
+	}
+
+	var socketOnMessage = function (message) {
+		document.getElementById('timer').innerHTML = `Last msg: ${new Date().toLocaleTimeString()}`;
+		appendText(`${message.data}`);
+	};
+
+	var socketOnOpen = function (message) {
+		appendText("...websocket opened!");
+	};
+
+	var socketOnClose = function (message) {
+		console.log('websocket disconnected - waiting for connection');
+		openWebSocket();
+	};
+
+	function openWebSocket() {
+		const websocketUrl = "wss://eji3awbnsh.execute-api.us-east-1.amazonaws.com/production"
+		ws = new WebSocket(websocketUrl);
+		ws.onopen = socketOnOpen;
+		ws.onclose = socketOnClose;
+		ws.onmessage = socketOnMessage;
+	}
+
+	function appendText(text) {
+		let value = textarea.innerHTML;
+		value += `${text}<br>`;
+		const sLength = value.length;
+		const maxLength = 900;
+		if (sLength > maxLength){
+			value = value.substring(sLength - maxLength);
+			const index = value.indexOf(`br`);
+			if (index > -1){
+				value = value.substring(index+3);
+			}
+		}
+		textarea.innerHTML = value;
+	}
+</script>
 
 </html>
