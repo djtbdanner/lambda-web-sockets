@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8" />
+
+<head>
+	<title>CORS test</title>
+</head>
+
+<body>
+	<form>
+		</br>
+		URL:<input type="text" size="80" id="url"
+			value="wss://eji3awbnsh.execute-api.us-east-1.amazonaws.com/production" />
+		</br>
+		<input type="input" id="msg" />
+		</br>
+		<input type="button" id="button" onClick="sendSocketMessage()" value="test" />
+		</br>
+		<textarea id="text" rows="4" cols="50">API results will appear here.</textarea>
+		<script>
+			let ws = undefined;
+			async function sendSocketMessage() {
+				try {
+					const msg = document.getElementById("msg").value;
+					if (ws === undefined) {
+						const url = document.getElementById("url").value;
+						ws = await new WebSocket(url);
+					}
+					ws.send(msg);
+					console.log(`Appears to have sent: ${msg}`);
+					ws.onmessage = (message) => {
+						const textarea =  document.getElementById("text");
+						textarea.value = `message received, ${message.data}`;
+					}
+				} catch (e) {
+					console.log(e);
+					console.log(e.stack);
+				}
+			}
+		</script>
+</body>
+
+</html>

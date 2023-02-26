@@ -1,0 +1,13 @@
+{
+  "name": "disconnect",
+  "version": "1.0.0",
+  "description": "disconnect",
+  "main": "src/index.js",
+  "author": "Dave Danner",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "aws-sdk": "^2.739.0"
+  }
+}
+
