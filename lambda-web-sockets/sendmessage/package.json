@@ -2,7 +2,7 @@
   "name": "send",
   "version": "1.0.0",
   "description": "send",
-  "main": "src/index.js",
+  "main": "index.js",
   "author": "Dave Danner",
   "license": "ISC",
   "dependencies": {},

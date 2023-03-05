@@ -1,12 +1,13 @@
 const AWS = require('aws-sdk');
-
+const fs = require('fs');
 const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: 'us-east-1' });
 
 const TABLE_NAME ='web-socket-connections';
 
+
 exports.handler = async event => {
   
-  console.log(`EVENT: ${JSON.stringify(event)}`);
+  // console.log(`EVENT: ${JSON.stringify(event)}`);
   const putParams = {
     TableName: TABLE_NAME,
     Item: {

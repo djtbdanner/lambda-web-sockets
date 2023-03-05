@@ -1,4 +1,8 @@
 node_modules
+lambda-web-sockets/api-gateway-sim/certs/key.pem
+lambda-web-sockets/api-gateway-sim/certs/cert.pem
+
 config.js
 .vscode
 *.zip
+*.pem

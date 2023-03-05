@@ -3,7 +3,7 @@ const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: 
 const TABLE_NAME ='web-socket-connections';
 
 exports.handler = async event => {
-  console.log(JSON.stringify(event));    
+  // console.log(JSON.stringify(event));    
   const deleteParams = {
     TableName: TABLE_NAME,
     Key: {
