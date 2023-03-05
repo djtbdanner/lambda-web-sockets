@@ -17,7 +17,7 @@ exports.socketEvent = (requestId, body) => {
                 "sourceIp": "162.245.174.22"
             },
             requestId,
-            "domainName": "localhost",
+            "domainName": "https://localhost",
             "connectionId": "A96sncVQoAMCKEw=",
             "apiId": "eji3awbnsh"
         },

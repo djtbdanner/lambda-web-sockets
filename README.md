@@ -11,6 +11,9 @@ AWS-SDK. In this case the sdk is included as a lambda layer. Doing this allows t
 
 The layer was created on Cloud 9 (so it was the correct OS and all you know) https://aws.amazon.com/premiumsupport/knowledge-center/lambda-layer-aws-sdk-latest-version/
 
+#### SDK-v3
+SDK is now modular and only the needed modules are installed in the layer. For a list of all the modules, you can go here: https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/index.html
+
 
 ## Deployment
 
@@ -37,3 +40,4 @@ Be sure to set the common name to localhost when responding to the questions. Th
 ```Common Name (e.g. server FQDN or YOUR name) []:localhost```
 
 Note that we can use the unsigned cert in the Node server with the environment variable being set (in the code): ```process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0;```
+

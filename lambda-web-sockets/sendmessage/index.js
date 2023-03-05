@@ -1,5 +1,13 @@
-const AWS = require('aws-sdk');
-const ddb = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10', region: 'us-east-1' });
+const {
+        ApiGatewayManagementApi
+      } = require("@aws-sdk/client-apigatewaymanagementapi"),
+      {
+        DynamoDBDocument
+      } = require("@aws-sdk/lib-dynamodb"),
+      {
+        DynamoDB
+      } = require("@aws-sdk/client-dynamodb");
+const ddb = DynamoDBDocument.from(new DynamoDB({ apiVersion: '2012-08-10', region: 'us-east-1' }));
 
 const TABLE_NAME = 'web-socket-connections';
 
@@ -7,12 +15,12 @@ exports.handler = async event => {
   let connectionData;
 
   try {
-    connectionData = await ddb.scan({ TableName: TABLE_NAME, ProjectionExpression: 'connectionId' }).promise();
+    connectionData = await ddb.scan({ TableName: TABLE_NAME, ProjectionExpression: 'connectionId' });
   } catch (e) {
     return { statusCode: 500, body: e.stack };
   }
 
-  const apigwManagementApi = new AWS.ApiGatewayManagementApi({
+  const apigwManagementApi = new ApiGatewayManagementApi({
     apiVersion: '2018-11-29',
     region: 'us-east-1',
     endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
@@ -22,12 +30,12 @@ exports.handler = async event => {
 
   const postCalls = connectionData.Items.map(async ({ connectionId }) => {
     try {
-      await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: postData }).promise();
+      await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: postData });
       console.log(`Lambda socket processing message to  ${connectionId}`);
     } catch (e) {
       if (e.statusCode === 410) {
         console.log(`Found stale connection, deleting ${connectionId}`);
-        await ddb.delete({ TableName: TABLE_NAME, Key: { connectionId } }).promise();
+        await ddb.delete({ TableName: TABLE_NAME, Key: { connectionId } });
       } else {
         throw e;
       }

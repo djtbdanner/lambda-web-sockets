@@ -2,12 +2,14 @@
   "name": "disconnect",
   "version": "1.0.0",
   "description": "disconnect",
-  "main": "src/index.js",
+  "main": "index.js",
   "author": "Dave Danner",
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "aws-sdk": "^2.739.0"
+    "@aws-sdk/client-apigatewaymanagementapi": "^3.282.0",
+    "@aws-sdk/client-dynamodb": "^3.284.0",
+    "@aws-sdk/lib-dynamodb": "^3.284.0"
   }
 }
 
