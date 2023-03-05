@@ -1,12 +1,12 @@
 const {
-        ApiGatewayManagementApi
-      } = require("@aws-sdk/client-apigatewaymanagementapi"),
-      {
-        DynamoDBDocument
-      } = require("@aws-sdk/lib-dynamodb"),
-      {
-        DynamoDB
-      } = require("@aws-sdk/client-dynamodb");
+  ApiGatewayManagementApi
+} = require("@aws-sdk/client-apigatewaymanagementapi"),
+  {
+    DynamoDBDocument
+  } = require("@aws-sdk/lib-dynamodb"),
+  {
+    DynamoDB
+  } = require("@aws-sdk/client-dynamodb");
 const ddb = DynamoDBDocument.from(new DynamoDB({ apiVersion: '2012-08-10', region: 'us-east-1' }));
 
 const TABLE_NAME = 'web-socket-connections';
@@ -20,11 +20,13 @@ exports.handler = async event => {
     return { statusCode: 500, body: e.stack };
   }
 
+  const endpoint = getEndpoint(event);
   const apigwManagementApi = new ApiGatewayManagementApi({
     apiVersion: '2018-11-29',
     region: 'us-east-1',
-    endpoint: event.requestContext.domainName + '/' + event.requestContext.stage
+    endpoint
   });
+
 
   const postData = event.body;
 
@@ -33,10 +35,11 @@ exports.handler = async event => {
       await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: postData });
       console.log(`Lambda socket processing message to  ${connectionId}`);
     } catch (e) {
-      if (e.statusCode === 410) {
+      if (isMaybeStaleConnection(e)) {
         console.log(`Found stale connection, deleting ${connectionId}`);
         await ddb.delete({ TableName: TABLE_NAME, Key: { connectionId } });
       } else {
+        console.log(`Error responding to API Gateway: ${e}, StatusCode: ${e.statusCode}, Stack: ${e.stack}`);
         throw e;
       }
     }
@@ -51,3 +54,19 @@ exports.handler = async event => {
   return { statusCode: 200, body: 'Data sent.' };
 };
 
+function getEndpoint(event) {
+  let endpoint = event.requestContext.domainName + '/' + event.requestContext.stage;
+  if (!endpoint.toLowerCase().startsWith('http')) {
+    console.log(`Adding protocol to endpoint ${endpoint}`);
+    endpoint = `https:\\${endpoint}`;
+  }
+  return endpoint;
+}
+
+function isMaybeStaleConnection(e) {
+  if (e) {
+    return e.statusCode === 410 || e.name === "GoneException" || e.name === "NotFoundException" || e.name === "BadRequestException";
+  }
+
+  return false
+}
