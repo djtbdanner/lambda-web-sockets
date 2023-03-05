@@ -79,7 +79,7 @@
 			<h4>Lambda Socket Example</h4>
 			Message to send via socket:<br><input type="input" id="msg" />
 			<br><br><br>
-			<button type="submit" id="button">SEND THE MESSAGE</button>
+			<button type="submit" id="button">SEND THE MESSAGE</button><span id="sent-timer"></span>
 			<br><br><br>
 			Socket Results (onmessage): <span id="timer"></span>
 			<br>
@@ -89,6 +89,8 @@
 </body>
 <script>
 	const textarea = document.getElementById("text");
+	const sentTimer = document.getElementById('sent-timer');
+	const recTimer = document.getElementById('timer');
 	document.getElementById("button").addEventListener("click", function (event) {
 		event.preventDefault();
 		sendSocketMessage();
@@ -104,6 +106,7 @@
 		try {
 			const msg = document.getElementById("msg").value;
 			ws.send(msg);
+			sentTimer.innerHTML = `Sent msg: ${new Date().toISOString()}`;
 			console.log(`Sent Message: ${msg}`);
 		} catch (e) {
 			console.log(`Error sending message: ${e}`);
@@ -113,7 +116,7 @@
 
 	var socketOnMessage = function (message) {
 		console.log(message.data);
-		document.getElementById('timer').innerHTML = `Last msg: ${new Date().toLocaleTimeString()}`;
+		recTimer.innerHTML = `Last msg: ${new Date().toISOString()}`;
 		// appendText(`${message.data}`);
 		appendText(`${message.data}`);
 	};
@@ -128,7 +131,8 @@
 	};
 
 	function openWebSocket() {
-		websocketUrl = "ws://localhost:3000";
+		const websocketUrl = "wss://eji3awbnsh.execute-api.us-east-1.amazonaws.com/production"
+		// websocketUrl = "ws://localhost:3000";
 		ws = new WebSocket(websocketUrl);
 		console.log(ws)
 		ws.onopen = socketOnOpen;

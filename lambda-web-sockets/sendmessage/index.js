@@ -39,7 +39,7 @@ exports.handler = async event => {
         console.log(`Found stale connection, deleting ${connectionId}`);
         await ddb.delete({ TableName: TABLE_NAME, Key: { connectionId } });
       } else {
-        console.log(`Error responding to API Gateway: ${e}, StatusCode: ${e.statusCode}, Stack: ${e.stack}`);
+        console.log(`Error responding to API Gateway: ${e}, ${e.name}, StatusCode: ${e.statusCode}, Stack: ${e.stack}`);
         throw e;
       }
     }
@@ -65,7 +65,7 @@ function getEndpoint(event) {
 
 function isMaybeStaleConnection(e) {
   if (e) {
-    return e.statusCode === 410 || e.name === "GoneException" || e.name === "NotFoundException" || e.name === "BadRequestException";
+    return e.statusCode === 410 || e.name === "GoneException" || e.name === "NotFoundException" || e.name === "BadRequestException" || e.name === "410";
   }
 
   return false
