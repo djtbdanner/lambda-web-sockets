@@ -75,7 +75,7 @@ async function getRequestBody(req) {
 // note that this is not something to deploy as there is no
 // file validation and it may server files that shold not be if deployed
 httpServer = http.createServer(async function (req, res) {
-    //__NOT SAFE TO RUN ON CLOUD__ because will server any file
+    //__NOT SAFE TO RUN ON CLOUD__ because will serve any file
     let url = req.url;
     if (url === "/" || url === "") {
         url = "/html/index.html"
