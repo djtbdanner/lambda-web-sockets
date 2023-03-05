@@ -19,7 +19,6 @@ exports.handler = async event => {
     await ddb.put(putParams).promise();
   } catch (err) {
     return { statusCode: 500, body: 'Failed to connect: ' + JSON.stringify(err) };
-    return { statusCode: 500, body: 'Failed to connect: ' + JSON.stringify(err) };
   }
   console.log(`Connected ${event.requestContext.connectionId}`);
   return { statusCode: 200, body: 'Connected.' };
