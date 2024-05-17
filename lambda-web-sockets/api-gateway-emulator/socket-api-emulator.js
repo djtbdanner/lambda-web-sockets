@@ -35,7 +35,7 @@ const httpsServer = https.createServer(options, async function (req, res) {
 });
 
 // Socket server gets upgraded web socket connections, messages and disconnects
-// Each new socket is added to a map of sockets as the lambda will response to any and or all of them.
+// Each new socket is added to a map of sockets as the lambda will respond to any and or all of them.
 const socketServer = new Server({ port: 3000 });
 socketServer.on('connection', (ws, req) => {
     ws.id = req.headers['sec-websocket-key'];
@@ -71,9 +71,9 @@ async function getRequestBody(req) {
     });
 }
 
-// Http server only here to server the html file
+// Http server only here to serve the html file
 // note that this is not something to deploy as there is no
-// file validation and it may server files that shold not be if deployed
+// file validation and it may serve files that it should not be if deployed
 httpServer = http.createServer(async function (req, res) {
     //__NOT SAFE TO RUN ON CLOUD__ because will serve any file
     let url = req.url;

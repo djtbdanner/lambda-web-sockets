@@ -4,5 +4,6 @@ lambda-web-sockets/api-gateway-sim/certs/cert.pem
 
 config.js
 .vscode
+.idea/
 *.zip
 *.pem
