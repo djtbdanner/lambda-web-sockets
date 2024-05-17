@@ -24,13 +24,12 @@ The lambda event is passed to the corresponding Lambda as needed. The connect st
 
 ## Emulator (run and test the socket Lambdas locally)
 The api-gateway-emulator folder contains code that can be used to emulate the API gateway locally, allowing you to build and run Lambda code locally.
-It connects to the socket processing lambdas and has an HTTP, HTTPS, and SOCKET server built in (straigt node no dependencies).
+It connects to the socket processing lambdas and has an HTTP, HTTPS, and SOCKET server built in (plain old node js, no dependencies).
 The HTTPS server intercepts the socket responses from the Lambda as they come.
 The HTTP server just serves up the test HTML - it is essentially not necessary
 The SOCKET server processes socket requests.
 
 Start the emulator with ```Node socket-api-emulator.js``` from the api-gateway-emulator folder. See the html file to change the test from local emulator to deployed API gateway code. Change the websocket url to change from local to deployed.
-
 
 Note that you will need certs to run the HTTPS server locally. The certs can be created in the api-gateway-emulator/certs folder with the following command (
 Run from unix command line, or Git Bash from Windows.):
