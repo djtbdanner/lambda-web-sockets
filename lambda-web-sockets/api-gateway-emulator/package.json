@@ -1,5 +1,6 @@
 {
-  "dependencies": {
-    "ws": "^8.12.1"
-  }
+  "scripts": {
+    "socket": "node socket-api-emulator"
+  },
+  "dependencies": {}
 }

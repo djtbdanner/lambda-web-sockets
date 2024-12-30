@@ -131,8 +131,8 @@
 	};
 
 	function openWebSocket() {
-		const websocketUrl = "wss://eji3awbnsh.execute-api.us-east-1.amazonaws.com/production"
-		// websocketUrl = "ws://localhost:3000";
+		// const websocketUrl = "wss://eji3awbnsh.execute-api.us-east-1.amazonaws.com/production"
+		websocketUrl = "ws://localhost:3000";
 		ws = new WebSocket(websocketUrl);
 		console.log(ws)
 		ws.onopen = socketOnOpen;
